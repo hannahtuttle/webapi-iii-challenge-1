@@ -17,7 +17,7 @@ router.post('/', (req, res) => {
 
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts',validateUserId, (req, res) => {
     // const newPost = req.body
     // console.log(req.body)
 
@@ -52,35 +52,26 @@ router.get('/:id', (req, res) => {
 
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts',validateUserId, (req, res) => {
 
     const id = req.params.id
 
 
         usersDB.getUserPosts(id)
-        .then(com => {
-            console.log('com in get', com)
-            if(com.length >= 1){
-                res.status(201).json(com)
-               } else{
-               res.status(404).json({ message: "The user with the specified ID does not exist." })    
-               }
+        .then(post => {
+                res.status(201).json(post)
     })
     .catch(errer => 
         res.status(500).json({ error: "The posts information could not be retrieved." }))
 
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id',validateUserId, (req, res) => {
     const id = req.params.id
         
     usersDB.remove(id)
     .then(result => {
-        if(result){
             res.status(200).json({message: 'user deleted succesfully'})
-        }else{
-            res.status(404).json({ message: "The user with the specified ID does not exist." })     
-    }
 })
 .catch(error => {
     res.status(500).json({ error: "The user could not be removed" })
@@ -88,18 +79,13 @@ router.delete('/:id', (req, res) => {
 
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id',validateUserId, (req, res) => {
     const id = req.params.id
     const changes = req.body;
 
     usersDB.update(id, changes)
     .then(updated => {
-        if(updated){
             res.status(200).json(updated)
-        }
-        else{
-           res.status(404).json({ message: "The user with the specified ID does not exist." })
-       }
     })
     .catch(error => {
         res.status(500).json({ error: "The user information could not be modified." })
@@ -110,11 +96,18 @@ router.put('/:id', (req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
-    const {id} = req.params.id
-    // if(){
-    //     req.user = req.body
-    // }
+    const {id} = req.params
 
+    usersDB.getById(id)
+    .then(userid => {
+        if(userid){
+            req.user = req.body
+        }else{
+            res.status(400).json({ message: "invalid user id" })
+        }
+    })
+
+    next()
 
 };
 
