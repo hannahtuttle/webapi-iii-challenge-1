@@ -4,12 +4,18 @@ const postRouter = require('./posts/postRouter.js')
 
 const server = express();
 
+server.use(express.json())
+
+server.use('/users', userRouter)
+
+server.use('/post', postRouter)
+
 
 //custom middleware
 
 function logger(req, res, next) {
   console.log(
-    `[${new Date().toISOString()}] ${req.method} to ${req.url}`
+    `[${new Date().toISOString()}] ${req.method} to ${req.url}]`
     );
     
     next();
@@ -18,5 +24,6 @@ function logger(req, res, next) {
       server.get('/',logger, (req, res) => {
         res.send(`<h2>Let's write some middleware!</h2>`)
       });
+
 
 module.exports = server;
