@@ -44,7 +44,7 @@ router.get('/', (req, res) => {
     })
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id',validateUserId,  (req, res) => {
     const {id} = req.params
 
     usersDB.getById(id)
