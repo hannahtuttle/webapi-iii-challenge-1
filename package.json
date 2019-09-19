@@ -30,6 +30,7 @@
     "install": "^0.13.0",
     "knex": "^0.18.3",
     "npm": "^6.11.3",
+    "pg": "^7.12.1",
     "sqlite3": "^4.0.9"
   },
   "devDependencies": {

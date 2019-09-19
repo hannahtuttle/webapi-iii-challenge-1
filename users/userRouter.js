@@ -130,7 +130,6 @@ function validateUser(req, res, next) {
     }else if(!body.name){
         res.status(400).json({ message: "missing required name field" })
     }
-    next();
 
 };
 
